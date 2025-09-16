@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import Header from "./components/header"
 import { Button } from "@/components/ui/button"
-import { SearchIcon } from "lucide-react"
+import { EyeIcon, Footprints, FootprintsIcon, SearchIcon } from "lucide-react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,9 +9,15 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { db } from "@/db"
 import { barbershop } from "@/db/schema"
 import BarbershopItem from "./components/barbershop-item"
+import { asc } from "drizzle-orm"
 
 const Home = async () => {
   const barbershops = await db.select().from(barbershop)
+  const popularBarbershops = await db
+    .select()
+    .from(barbershop)
+    .orderBy(asc(barbershop.name))
+
   return (
     <div>
       <Header />
@@ -24,6 +30,39 @@ const Home = async () => {
             <SearchIcon />
           </Button>
         </div>
+
+        <div className="mt-6 flex gap-3 overflow-auto [&::-webkit-scrollbar]:hidden">
+          <Button className="gap-2" variant="secondary">
+            <Image alt="cabelo" src="/cabelo.svg" width={16} height={16} />
+            Cabelo
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image alt="Barba" src="/barba.svg" width={16} height={16} />
+            Barba
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image
+              alt="Acabamento"
+              src="/acabamento.svg"
+              width={16}
+              height={16}
+            />
+            Acabamento
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <EyeIcon />
+            Sobrancelha
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <FootprintsIcon size={16} />
+            Pezinho
+          </Button>
+        </div>
+
         <div className="relative mt-6 h-[150px] w-full">
           <Image
             alt="Banner barbearia"
@@ -56,6 +95,7 @@ const Home = async () => {
             </div>
           </CardContent>
         </Card>
+
         <h2 className="mt-6 mb-3 text-xs font-bold text-gray-500">
           RECOMENDADOS
         </h2>
@@ -65,7 +105,25 @@ const Home = async () => {
             <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
+
+        <h2 className="mt-6 mb-3 text-xs font-bold text-gray-500">POPULARES</h2>
+
+        <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+          {popularBarbershops.map((barbershop) => (
+            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
+          ))}
+        </div>
       </div>
+
+      <footer>
+        <Card>
+          <CardContent>
+            <p className="text-sm text-gray-500">
+              © 2025 NaBarba. Todos os direitos reservados.
+            </p>
+          </CardContent>
+        </Card>
+      </footer>
     </div>
   )
 }

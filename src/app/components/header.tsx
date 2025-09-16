@@ -5,7 +5,7 @@ import Image from "next/image"
 
 const Header = () => {
   return (
-    <Card>
+    <Card className="rounded-0">
       <CardContent className="flex flex-row items-center justify-between">
         <Image alt="FSW Barber" src="/logo.png" height={18} width={120} />
         <Button variant="outline" size="icon">
