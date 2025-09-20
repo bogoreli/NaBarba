@@ -1,6 +1,7 @@
+import ServiceItem from "@/app/components/service-item"
 import { Button } from "@/components/ui/button"
 import { db } from "@/db"
-import { barbershop } from "@/db/schema"
+import { barbershop, barbershopServices } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { ChevronsLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
@@ -15,14 +16,17 @@ interface BarbershopPageProps {
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
   const { id } = await params
-  const barbershops = await db
+  const [barbershops] = await db
     .select()
     .from(barbershop)
     .where(eq(barbershop.id, id))
 
-  const barbershopData = barbershops[0]
+  const services = await db
+    .select()
+    .from(barbershopServices)
+    .where(eq(barbershopServices.barbershopId, id))
 
-  if (!barbershopData) {
+  if (!barbershops) {
     return notFound()
   }
 
@@ -30,8 +34,8 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
     <div>
       <div className="relative h-[250px] w-full">
         <Image
-          src={barbershopData.imageUrl}
-          alt={barbershopData.name}
+          src={barbershops.imageUrl}
+          alt={barbershops.name}
           fill
           className="object-cover"
         />
@@ -56,11 +60,11 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         </Button>
       </div>
 
-      <div className="space-y-2 border-b border-solid p-5">
-        <h1 className="text-xl font-bold">{barbershopData.name}</h1>
+      <div className="space-y-3 border-b border-solid p-5">
+        <h1 className="text-xl font-bold">{barbershops.name}</h1>
         <div className="flex items-center gap-1">
           <MapPinIcon className="text-primary" size={18} />
-          <p className="text-sm">{barbershopData.address}</p>
+          <p className="text-sm">{barbershops.address}</p>
         </div>
 
         <div className="flex items-center gap-1">
@@ -71,7 +75,16 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
       <div className="space-y-3 border-b border-solid p-5">
         <h2 className="text-xs font-bold text-gray-400 uppercase">Sobre nós</h2>
-        <p className="text-justify text-sm">{barbershopData.description}</p>
+        <p className="text-justify text-sm">{barbershops.description}</p>
+      </div>
+
+      <div className="space-y-3 border-b border-solid p-5">
+        <h2 className="text-xs font-bold text-gray-400 uppercase">Serviços</h2>
+        <div className="space-y-3">
+          {services.map((service) => (
+            <ServiceItem key={service.id} service={service} />
+          ))}
+        </div>
       </div>
     </div>
   )
