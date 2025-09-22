@@ -1,9 +1,17 @@
+import PhoneItem from "@/app/components/phone-item"
 import ServiceItem from "@/app/components/service-item"
 import { Button } from "@/components/ui/button"
 import { db } from "@/db"
 import { barbershop, barbershopServices } from "@/db/schema"
 import { eq } from "drizzle-orm"
-import { ChevronsLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
+import {
+  ChevronsLeftIcon,
+  MapPinIcon,
+  MenuIcon,
+  PhoneIcon,
+  SmartphoneIcon,
+  StarIcon,
+} from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -85,6 +93,12 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
             <ServiceItem key={service.id} service={service} />
           ))}
         </div>
+      </div>
+
+      <div className="space-y-3 p-5">
+        {barbershops.phones?.map((phone) => (
+          <PhoneItem key={phone} phone={phone} />
+        ))}
       </div>
     </div>
   )

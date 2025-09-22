@@ -3,7 +3,6 @@ import Header from "./components/header"
 import { Button } from "@/components/ui/button"
 import { SearchIcon } from "lucide-react"
 import Image from "next/image"
-import { Card, CardContent } from "@/components/ui/card"
 import { db } from "@/db"
 import { barbershop } from "@/db/schema"
 import BarbershopItem from "./components/barbershop-item"
@@ -74,16 +73,6 @@ const Home = async () => {
           ))}
         </div>
       </div>
-
-      <footer>
-        <Card>
-          <CardContent>
-            <p className="text-sm text-gray-500">
-              © 2025 NaBarba. Todos os direitos reservados.
-            </p>
-          </CardContent>
-        </Card>
-      </footer>
     </div>
   )
 }
