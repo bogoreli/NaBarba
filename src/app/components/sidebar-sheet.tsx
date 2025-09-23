@@ -28,10 +28,11 @@ const SidebarSheet = () => {
       </div>
 
       <div className="flex flex-col gap-4 border-b border-solid p-2">
-        <Button className="justify-start">
-          <Link href={"/"} />
-          <HomeIcon size={18} />
-          Ínicio
+        <Button className="justify-start" asChild>
+          <Link href="/">
+            <HomeIcon size={18} />
+            Ínicio
+          </Link>
         </Button>
         <Button className="justify-start" variant="ghost">
           <CalendarIcon size={18} />
