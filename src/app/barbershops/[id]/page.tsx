@@ -1,17 +1,12 @@
 import PhoneItem from "@/app/components/phone-item"
 import ServiceItem from "@/app/components/service-item"
+import SidebarSheet from "@/app/components/sidebar-sheet"
 import { Button } from "@/components/ui/button"
+import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 import { db } from "@/db"
 import { barbershop, barbershopServices } from "@/db/schema"
 import { eq } from "drizzle-orm"
-import {
-  ChevronsLeftIcon,
-  MapPinIcon,
-  MenuIcon,
-  PhoneIcon,
-  SmartphoneIcon,
-  StarIcon,
-} from "lucide-react"
+import { ChevronsLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -59,13 +54,18 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
           </Link>
         </Button>
 
-        <Button
-          size="icon"
-          variant="secondary"
-          className="absolute top-4 right-4 p-2"
-        >
-          <MenuIcon />
-        </Button>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute top-4 right-4 p-2"
+            >
+              <MenuIcon />
+            </Button>
+          </SheetTrigger>
+          <SidebarSheet />
+        </Sheet>
       </div>
 
       <div className="space-y-3 border-b border-solid p-5">
