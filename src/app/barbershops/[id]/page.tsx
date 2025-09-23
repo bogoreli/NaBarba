@@ -4,7 +4,7 @@ import SidebarSheet from "@/app/components/sidebar-sheet"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 import { db } from "@/db"
-import { barbershop, barbershopServices } from "@/db/schema"
+import { barbershops, barbershopServices } from "@/db/schema" // ← plural aqui
 import { eq } from "drizzle-orm"
 import { ChevronsLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
@@ -18,18 +18,21 @@ interface BarbershopPageProps {
 }
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
-  const { id } = await params
-  const [barbershops] = await db
-    .select()
-    .from(barbershop)
-    .where(eq(barbershop.id, id))
+  const { id } = params
 
+  // busca 1 barbearia
+  const [barbershopData] = await db
+    .select()
+    .from(barbershops)
+    .where(eq(barbershops.id, id))
+
+  // busca serviços da barbearia
   const services = await db
     .select()
     .from(barbershopServices)
     .where(eq(barbershopServices.barbershopId, id))
 
-  if (!barbershops) {
+  if (!barbershopData) {
     return notFound()
   }
 
@@ -37,8 +40,8 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
     <div>
       <div className="relative h-[250px] w-full">
         <Image
-          src={barbershops.imageUrl}
-          alt={barbershops.name}
+          src={barbershopData.imageUrl}
+          alt={barbershopData.name}
           fill
           className="object-cover"
         />
@@ -69,10 +72,10 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       </div>
 
       <div className="space-y-3 border-b border-solid p-5">
-        <h1 className="text-xl font-bold">{barbershops.name}</h1>
+        <h1 className="text-xl font-bold">{barbershopData.name}</h1>
         <div className="flex items-center gap-1">
           <MapPinIcon className="text-primary" size={18} />
-          <p className="text-sm">{barbershops.address}</p>
+          <p className="text-sm">{barbershopData.address}</p>
         </div>
 
         <div className="flex items-center gap-1">
@@ -83,7 +86,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
 
       <div className="space-y-3 border-b border-solid p-5">
         <h2 className="text-xs font-bold text-gray-400 uppercase">Sobre nós</h2>
-        <p className="text-justify text-sm">{barbershops.description}</p>
+        <p className="text-justify text-sm">{barbershopData.description}</p>
       </div>
 
       <div className="space-y-3 border-b border-solid p-5">
@@ -96,7 +99,7 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
       </div>
 
       <div className="space-y-3 p-5">
-        {barbershops.phones?.map((phone) => (
+        {barbershopData.phones?.map((phone) => (
           <PhoneItem key={phone} phone={phone} />
         ))}
       </div>

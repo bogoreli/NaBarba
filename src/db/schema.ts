@@ -15,7 +15,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 }))
 
 // ---------- BARBERSHOPS ----------
-export const barbershop = pgTable("barbershops", {
+export const barbershops = pgTable("barbershops", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   address: text("address").notNull(),
@@ -26,7 +26,7 @@ export const barbershop = pgTable("barbershops", {
   updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-export const barbershopsRelations = relations(barbershop, ({ many }) => ({
+export const barbershopsRelations = relations(barbershops, ({ many }) => ({
   services: many(barbershopServices),
 }))
 
@@ -39,7 +39,7 @@ export const barbershopServices = pgTable("barbershop_services", {
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   barbershopId: uuid("barbershop_id")
     .notNull()
-    .references(() => barbershop.id, { onDelete: "cascade" }),
+    .references(() => barbershops.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 })
@@ -47,9 +47,9 @@ export const barbershopServices = pgTable("barbershop_services", {
 export const barbershopServicesRelations = relations(
   barbershopServices,
   ({ one, many }) => ({
-    barbershop: one(barbershop, {
+    barbershop: one(barbershops, {
       fields: [barbershopServices.barbershopId],
-      references: [barbershop.id],
+      references: [barbershops.id],
     }),
     bookings: many(bookings),
   }),

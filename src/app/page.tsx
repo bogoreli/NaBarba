@@ -4,18 +4,21 @@ import { Button } from "@/components/ui/button"
 import { SearchIcon } from "lucide-react"
 import Image from "next/image"
 import { db } from "@/db"
-import { barbershop } from "@/db/schema"
+import { barbershops } from "@/db/schema"
 import BarbershopItem from "./components/barbershop-item"
 import { asc } from "drizzle-orm"
 import { quickSearchOptions } from "./components/quickSearch"
 import BookingItem from "./components/bookingItem"
 
 const Home = async () => {
-  const barbershops = await db.select().from(barbershop)
+  // busca todas as barbearias
+  const barbershopsList = await db.select().from(barbershops)
+
+  // busca barbearias ordenadas por nome
   const popularBarbershops = await db
     .select()
-    .from(barbershop)
-    .orderBy(asc(barbershop.name))
+    .from(barbershops)
+    .orderBy(asc(barbershops.name))
 
   return (
     <div>
@@ -60,7 +63,7 @@ const Home = async () => {
         </h2>
 
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
-          {barbershops.map((barbershop) => (
+          {barbershopsList.map((barbershop) => (
             <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
