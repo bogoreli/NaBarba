@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 import {
-  Form, // esse vem daqui
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -20,6 +20,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   email: z.email({ message: "Insira um email válido." }),
@@ -31,6 +34,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 const SignInForm = () => {
+  const router = useRouter()
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,8 +43,17 @@ const SignInForm = () => {
     },
   })
 
-  function onSubmit(values: FormValues) {
-    console.log(values)
+  async function onSubmit(values: FormValues) {
+    await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success("Login efetuado com sucesso!")
+          router.push("/")
+        },
+      },
+    })
   }
 
   return (
