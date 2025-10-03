@@ -1,5 +1,6 @@
+"use client"
 import { quickSearchOptions } from "./quickSearch"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
@@ -13,8 +14,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { DialogTitle } from "@radix-ui/react-dialog"
+import { authClient } from "@/lib/auth-client"
 
 const SidebarSheet = () => {
+  const { data: session } = authClient.useSession()
+
+  const handleLogoutClick = () => authClient.signOut()
   return (
     <SheetContent>
       <SheetHeader>
@@ -22,36 +27,44 @@ const SidebarSheet = () => {
       </SheetHeader>
 
       <div className="flex items-center justify-between gap-3 border-b border-solid p-2">
-        <h2 className="text-lg font-bold">Olá faça o seu login</h2>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size={"icon"}>
-              <LogInIcon size={18} />
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="w-[90%]">
-            <DialogHeader>
-              <DialogTitle>Faça seu login na plataforma!</DialogTitle>
-              <DialogDescription>
-                Crie sua conta ou conecte-se usando uma conta existente
-              </DialogDescription>
-            </DialogHeader>
-            <Button className="font-bold" asChild>
-              <Link href={"/authentication"}>Fazer login</Link>
-            </Button>
-          </DialogContent>
-        </Dialog>
-        {/* <Avatar>
-          <AvatarImage
-            src={
-              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            }
-          />
-        </Avatar>
-        <div>
-          <p className="font-bold">Kevin bogoreli</p>
-          <p className="text-xs">bogoreli.kevin@outlook.com</p>
-        </div> */}
+        {session?.user ? (
+          <div className="flex items-center gap-2">
+            <Avatar>
+              <AvatarImage src={session?.user?.image ?? ""} />
+              <AvatarFallback>
+                {session?.user?.name?.split(" ")?.[0]?.[0]}
+                {session?.user?.name?.split(" ")?.[1]?.[0]}
+              </AvatarFallback>
+            </Avatar>
+
+            <div>
+              <p className="font-bold">{session.user.name}</p>
+              <p className="text-xs">{session.user.email}</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h2 className="text-lg font-bold">Olá faça o seu login</h2>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size={"icon"}>
+                  <LogInIcon size={18} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="w-[90%]">
+                <DialogHeader>
+                  <DialogTitle>Faça seu login na plataforma!</DialogTitle>
+                  <DialogDescription>
+                    Crie sua conta ou conecte-se usando uma conta existente
+                  </DialogDescription>
+                </DialogHeader>
+                <Button className="font-bold" asChild>
+                  <Link href={"/authentication"}>Fazer login</Link>
+                </Button>
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 border-b border-solid p-2">
@@ -86,7 +99,11 @@ const SidebarSheet = () => {
       </div>
 
       <div className="flex flex-col gap-4 p-2">
-        <Button className="justify-start text-sm" variant={"ghost"}>
+        <Button
+          onClick={handleLogoutClick}
+          className="justify-start text-sm"
+          variant={"ghost"}
+        >
           <LogOutIcon size={18} />
           Sair da conta
         </Button>
