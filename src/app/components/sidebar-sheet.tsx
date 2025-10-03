@@ -33,12 +33,11 @@ const SidebarSheet = () => {
             <DialogHeader>
               <DialogTitle>Faça seu login na plataforma!</DialogTitle>
               <DialogDescription>
-                Conecte-se usando sua conta do Google
+                Crie sua conta ou conecte-se usando uma conta existente
               </DialogDescription>
             </DialogHeader>
-            <Button className="font-bold">
-              <Image alt="Login com Google" src={"/google.svg"} width={18} height={18} />
-              Entrar com Google
+            <Button className="font-bold" asChild>
+              <Link href={"/authentication"}>Fazer login</Link>
             </Button>
           </DialogContent>
         </Dialog>
