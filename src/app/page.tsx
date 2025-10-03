@@ -1,7 +1,6 @@
-import { Input } from "@/components/ui/input"
 import Header from "./components/header"
 import { Button } from "@/components/ui/button"
-import { SearchIcon } from "lucide-react"
+
 import Image from "next/image"
 import { db } from "@/db"
 import { barbershops } from "@/db/schema"
@@ -9,12 +8,11 @@ import BarbershopItem from "./components/barbershop-item"
 import { asc } from "drizzle-orm"
 import { quickSearchOptions } from "./components/quickSearch"
 import BookingItem from "./components/bookingItem"
+import Search from "./components/search"
 
 const Home = async () => {
-  // busca todas as barbearias
   const barbershopsList = await db.select().from(barbershops)
 
-  // busca barbearias ordenadas por nome
   const popularBarbershops = await db
     .select()
     .from(barbershops)
@@ -26,11 +24,9 @@ const Home = async () => {
       <div className="p-5">
         <h2 className="text-xl font-bold">Olá, Kevin</h2>
         <p>Segunda feira, 15 de setembro</p>
-        <div className="mt-6 flex items-center gap-2">
-          <Input placeholder="Faça sua busca..." />
-          <Button>
-            <SearchIcon />
-          </Button>
+
+        <div className="mt-6">
+          <Search />
         </div>
 
         <div className="mt-6 flex gap-3 overflow-auto [&::-webkit-scrollbar]:hidden">
