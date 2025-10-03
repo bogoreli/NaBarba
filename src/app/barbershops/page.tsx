@@ -7,20 +7,22 @@ import Search from "../components/search"
 
 interface BarbershopsPageProps {
   searchParams: Promise<{
-    search?: string
+    title?: string
+    service?: string
   }>
 }
 
 const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
-  const { search } = await searchParams
+  // 👇 await uma vez só
+  const { title, service } = await searchParams
 
   const Barbershops = await db
     .select()
     .from(barbershops)
     .where(
       or(
-        ilike(barbershops.name, `%${search ?? ""}%`),
-        ilike(barbershops.description, `%${search ?? ""}%`),
+        ilike(barbershops.name, `%${title ?? ""}%`),
+        ilike(barbershops.description, `%${service ?? ""}%`),
       ),
     )
 
@@ -32,7 +34,13 @@ const BarbershopsPage = async ({ searchParams }: BarbershopsPageProps) => {
       </div>
       <div className="px-5">
         <h2 className="mt-6 mb-3 text-xs font-bold text-gray-500">
-          Resultados para &quot;{search}&quot;
+          {title ? (
+            <>Resultados para &quot;{title}&quot;</>
+          ) : service ? (
+            <>Resultados para &quot;{service}&quot;</>
+          ) : (
+            "Todas as barbearias"
+          )}
         </h2>
         <div className="grid grid-cols-2 gap-4">
           {Barbershops.map((barbershop) => (
