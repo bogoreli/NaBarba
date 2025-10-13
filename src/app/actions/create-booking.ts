@@ -2,6 +2,7 @@
 
 import { db } from "@/db"
 import { bookings } from "@/db/schema"
+import { revalidatePath } from "next/cache"
 
 interface CreateBookingProps {
   userId: string
@@ -19,4 +20,5 @@ export const createBooking = async ({
     serviceId,
     date,
   })
+  revalidatePath("/barbershops/[id]")
 }
