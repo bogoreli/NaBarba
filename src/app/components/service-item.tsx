@@ -14,7 +14,7 @@ import {
 import { barbershopServices, barbershops } from "@/db/schema"
 import { ptBR } from "date-fns/locale"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { createBooking } from "../actions/create-booking"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
@@ -22,6 +22,7 @@ import { getBookings } from "../actions/get-bookings"
 import type { Booking } from "../actions/get-bookings"
 import { addDays } from "date-fns"
 import { ne } from "drizzle-orm"
+import { useRouter } from "next/navigation"
 
 export type BarbershopService = typeof barbershopServices.$inferSelect
 
@@ -84,6 +85,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     setDayBookings([])
     setBookingSheetIsOpen((open) => !open)
   }
+  const router = useRouter()
 
   const { data: session } = authClient.useSession()
   const handleDateSelect = (date: Date | undefined) => setSelectedDay(date)
@@ -91,6 +93,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   const handleCreateBooking = async () => {
     if (!session?.user) {
       toast.error("Você precisa estar logado para reservar.")
+      router.push("/authentication")
       return
     }
 
