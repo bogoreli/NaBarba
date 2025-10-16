@@ -1,3 +1,4 @@
+"use client"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
@@ -6,6 +7,7 @@ import { isFuture, format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -13,12 +15,38 @@ import {
 } from "@/components/ui/sheet"
 import Image from "next/image"
 import PhoneItem from "./phone-item"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { deleteBooking } from "../actions/delete-booking"
+import { toast } from "sonner"
+import { useState } from "react"
 
 interface BookingItemProps {
   booking: BookingWithRelations
 }
 
 const BookingItem = ({ booking }: BookingItemProps) => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const handleCancelBooking = async () => {
+    try {
+      await deleteBooking(booking.id)
+      toast.success("Reserva cancelada com sucesso!")
+      setIsSheetOpen(false)
+    } catch (error) {
+      console.error(error)
+      toast.error("Erro ao cancelar a reserva. Tente novamente.")
+    }
+  }
+
   const isConfirmed = isFuture(new Date(booking.date))
   const date = new Date(booking.date)
   const month = date.toLocaleString("pt-BR", { month: "long" })
@@ -28,8 +56,12 @@ const BookingItem = ({ booking }: BookingItemProps) => {
     minute: "2-digit",
   })
 
+  const handleSheetOpenChange = (isOpen: boolean) => {
+    setIsSheetOpen(isOpen)
+  }
+
   return (
-    <Sheet>
+    <Sheet open={isSheetOpen} onOpenChange={handleSheetOpenChange}>
       <SheetTrigger className="w-full">
         <Card className="min-w-[90%]">
           <CardContent className="flex justify-between p-0">
@@ -127,9 +159,62 @@ const BookingItem = ({ booking }: BookingItemProps) => {
           </Card>
         </div>
 
-        {booking.service.barbershop.phones.map((phone) => (
-          <PhoneItem key={phone.id} phone={phone} />
-        ))}
+        <div className="space-y-3">
+          {booking.service.barbershop.phones.map((phone) => (
+            <PhoneItem key={phone.id} phone={phone} />
+          ))}
+        </div>
+
+        {/* Botões ajustados dinamicamente */}
+        <div
+          className={`mt-6 flex w-full gap-3 ${
+            isConfirmed ? "" : "justify-center"
+          }`}
+        >
+          <SheetClose asChild>
+            <Button
+              variant="outline"
+              className={isConfirmed ? "w-1/2" : "w-full"}
+            >
+              Voltar
+            </Button>
+          </SheetClose>
+
+          {isConfirmed && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="destructive" className="w-1/2">
+                  Cancelar reserva
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Você quer cancelar a reserva?</DialogTitle>
+                  <DialogDescription>
+                    Tem certeza que deseja cancelar essa reserva? Essa ação não
+                    pode ser desfeita.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex flex-row gap-3">
+                  <DialogClose asChild>
+                    <Button variant="secondary" className="w-1/2">
+                      Voltar
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button
+                      variant="destructive"
+                      className="w-1/2"
+                      onClick={handleCancelBooking}
+                    >
+                      Confirmar
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   )

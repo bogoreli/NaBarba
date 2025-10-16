@@ -4,7 +4,7 @@ import SidebarSheet from "@/app/components/sidebar-sheet"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 import { db } from "@/db"
-import { barbershops, barbershopServices } from "@/db/schema" // ← plural aqui
+import { barbershops, barbershopServices } from "@/db/schema" //
 import { eq } from "drizzle-orm"
 import { ChevronsLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
