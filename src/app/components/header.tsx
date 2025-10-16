@@ -8,10 +8,16 @@ import Link from "next/link"
 
 const Header = () => {
   return (
-    <Card>
-      <CardContent className="flex flex-row items-center justify-between pb-0">
+    <Card className="shadow-none">
+      <CardContent className="relative flex items-center justify-between px-4 py-1">
         <Link href="/">
-          <Image alt="FSW Barber" src="/logo.png" height={30} width={220} />
+          <Image
+            alt="FSW Barber"
+            src="/logo.png"
+            height={140}
+            width={140}
+            className="-my-2 object-contain"
+          />
         </Link>
 
         <Sheet>
