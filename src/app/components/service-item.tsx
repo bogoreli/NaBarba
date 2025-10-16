@@ -42,9 +42,21 @@ const TIME_LIST = [
   "18:00",
 ]
 
-const getTimeList = (bookings: Booking[]) => {
+const getTimeList = (bookings: Booking[], selectedDay?: Date) => {
+  const now = new Date()
+
   return TIME_LIST.filter((time) => {
     const [hours, minutes] = time.split(":").map(Number)
+    const timeDate = new Date(selectedDay ?? now)
+    timeDate.setHours(hours, minutes, 0, 0)
+
+    if (
+      selectedDay &&
+      timeDate.toDateString() === now.toDateString() &&
+      timeDate <= now
+    ) {
+      return false
+    }
 
     const hasBookingOnCurrentTime = bookings.some((booking) => {
       const bookingDate = new Date(booking.date)
@@ -83,11 +95,13 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     setDayBookings([])
     setBookingSheetIsOpen((open) => !open)
   }
-  const router = useRouter()
 
+  const router = useRouter()
   const { data: session } = authClient.useSession()
+
   const handleDateSelect = (date: Date | undefined) => setSelectedDay(date)
   const handleTimeSelect = (time: string) => setSelectedTime(time)
+
   const handleCreateBooking = async () => {
     if (!session?.user) {
       toast.error("Você precisa estar logado para reservar.")
@@ -109,6 +123,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
 
     toast.success("Reserva criada com sucesso!")
   }
+
   return (
     <Card className="p-2">
       <CardContent className="flex items-center gap-3">
@@ -124,6 +139,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
         <div className="flex w-full flex-col justify-between space-y-3">
           <h3 className="font-semibold">{service.name}</h3>
           <p className="text-sm text-gray-400">{service.description}</p>
+
           <div className="flex items-center justify-between">
             <p className="text-primary text-sm font-bold">
               {Intl.NumberFormat("pt-BR", {
@@ -172,7 +188,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                   <div className="bordel-solid flex flex-col gap-3 border-b p-5">
                     {/* Botões de horário */}
                     <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-                      {getTimeList(dayBookings).map((time) => (
+                      {getTimeList(dayBookings, selectedDay).map((time) => (
                         <Button
                           key={time}
                           variant={
@@ -186,7 +202,6 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                       ))}
                     </div>
 
-                    {/* Resumo da reserva + SheetFooter */}
                     {selectedTime && (
                       <>
                         <div className="p-5">
