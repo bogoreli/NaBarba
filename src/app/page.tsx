@@ -46,8 +46,16 @@ const Home = async () => {
     <div>
       <Header />
       <div className="p-5">
-        <h2 className="text-xl font-bold">Olá, Kevin</h2>
-        <p>Segunda feira, 15 de setembro</p>
+        <h2 className="text-xl font-bold">
+          Olá, {session?.user ? session?.user.name : "bem-vindo"}!
+        </h2>
+        <p>
+          {new Date().toLocaleDateString("pt-BR", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+          })}
+        </p>
 
         <div className="mt-6">
           <Search />
