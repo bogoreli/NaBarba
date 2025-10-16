@@ -19,7 +19,10 @@ import { authClient } from "@/lib/auth-client"
 const SidebarSheet = () => {
   const { data: session } = authClient.useSession()
 
-  const handleLogoutClick = () => authClient.signOut()
+  const handleLogoutClick = () => {
+    authClient.signOut()
+    window.location.href = "/"
+  }
   return (
     <SheetContent>
       <SheetHeader>
