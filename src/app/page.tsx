@@ -1,23 +1,46 @@
 import Header from "./components/header"
 import { Button } from "@/components/ui/button"
-
 import Image from "next/image"
 import { db } from "@/db"
-import { barbershops } from "@/db/schema"
+import { barbershops, bookings as bookingsSchema } from "@/db/schema"
 import BarbershopItem from "./components/barbershop-item"
-import { asc } from "drizzle-orm"
+import { and, asc, eq, gt } from "drizzle-orm"
 import { quickSearchOptions } from "./components/quickSearch"
 import BookingItem from "./components/bookingItem"
 import Search from "./components/search"
 import Link from "next/link"
+import { api } from "@/lib/auth"
+import { headers } from "next/headers"
 
 const Home = async () => {
+  const session = await api.getSession({
+    headers: headers(),
+  })
+
+  // lista de barbearias
   const barbershopsList = await db.select().from(barbershops)
 
   const popularBarbershops = await db
     .select()
     .from(barbershops)
     .orderBy(asc(barbershops.name))
+
+  const confirmedBookings = session?.user
+    ? await db.query.bookings.findMany({
+        where: and(
+          eq(bookingsSchema.userId, session.user.id),
+          gt(bookingsSchema.date, new Date()),
+        ),
+        with: {
+          service: {
+            with: {
+              barbershop: true,
+            },
+          },
+        },
+        orderBy: (bookings, { asc }) => [asc(bookings.date)],
+      })
+    : []
 
   return (
     <div>
@@ -60,7 +83,15 @@ const Home = async () => {
           />
         </div>
 
-        <BookingItem />
+        <h2 className="mt-6 mb-3 text-xs font-bold text-gray-500">
+          AGENDAMENTOS
+        </h2>
+
+        <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+          {confirmedBookings.map((booking) => (
+            <BookingItem key={booking.id} booking={booking} />
+          ))}
+        </div>
 
         <h2 className="mt-6 mb-3 text-xs font-bold text-gray-500">
           RECOMENDADOS
