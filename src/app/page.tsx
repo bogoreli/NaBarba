@@ -85,7 +85,7 @@ const Home = async () => {
         <div className="relative mt-6 h-[150px] w-full">
           <Image
             alt="Banner barbearia"
-            src="/banner.png"
+            src="/barber.png"
             fill
             className="rounded-xl object-cover"
           />
