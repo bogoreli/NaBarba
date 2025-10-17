@@ -29,9 +29,9 @@ export const auth = betterAuth({
   callbacks: {
     async session({ session, user }) {
       session.user = {
-        ...session.user,
+        ...(session.user ?? {}),
         id: user.id,
-      } as any
+      } as typeof session.user & { id: string }
       return session
     },
   },

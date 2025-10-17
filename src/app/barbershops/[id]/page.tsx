@@ -4,7 +4,7 @@ import SidebarSheet from "@/app/components/sidebar-sheet"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger } from "@/components/ui/sheet"
 import { db } from "@/db"
-import { barbershops, barbershopServices } from "@/db/schema" //
+import { barbershops, barbershopServices } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { ChevronsLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
@@ -12,13 +12,13 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 interface BarbershopPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
-  const { id } = params
+  const { id } = await params
 
   // busca 1 barbearia
   const [barbershopData] = await db
@@ -93,7 +93,11 @@ const BarbershopPage = async ({ params }: BarbershopPageProps) => {
         <h2 className="text-xs font-bold text-gray-400 uppercase">Serviços</h2>
         <div className="space-y-3">
           {services.map((service) => (
-            <ServiceItem key={service.id} barbershop={barbershopData} service={service} />
+            <ServiceItem
+              key={service.id}
+              barbershop={barbershopData}
+              service={service}
+            />
           ))}
         </div>
       </div>

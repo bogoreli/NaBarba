@@ -1,6 +1,5 @@
 import { db } from "."
 import { barbershops, barbershopServices } from "./schema"
-import { eq } from "drizzle-orm"
 
 async function seedDatabase() {
   try {
