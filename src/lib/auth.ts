@@ -35,8 +35,7 @@ export const auth = betterAuth({
       return session
     },
   },
-  secret: process.env.NEXT_AUTH_SECRET,
+  secret: process.env.BETTER_AUTH_SECRET as string,
 })
 
-// 👇 Adiciona esta exportação para usar dentro do Next (server components, actions etc.)
 export const { api } = auth
