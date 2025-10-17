@@ -82,7 +82,7 @@ const Home = async () => {
           ))}
         </div>
 
-        <div className="relative mt-6 h-[300px] w-full">
+        <div className="relative mt-6 h-[150px] w-full">
           <Image
             alt="Banner barbearia"
             src="/bannerBarbearia.png"
