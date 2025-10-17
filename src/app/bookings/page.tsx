@@ -13,7 +13,7 @@ export default async function BookingsPage() {
 
   const confirmedBookings = await db.query.bookings.findMany({
     where: and(
-      eq(bookings.userId, session.user.id),
+      eq(bookings.userId, session?.user.id),
       gt(bookings.date, new Date()),
     ),
     with: {
@@ -29,7 +29,7 @@ export default async function BookingsPage() {
   // Reservas passadas (concluídas)
   const concludedBookings = await db.query.bookings.findMany({
     where: and(
-      eq(bookings.userId, session.user.id),
+      eq(bookings.userId, session?.user.id),
       lt(bookings.date, new Date()),
     ),
     with: {
