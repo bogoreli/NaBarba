@@ -21,7 +21,7 @@ const SidebarSheet = () => {
 
   const handleLogoutClick = async () => {
     await authClient.signOut()
-    window.location.href = "/"
+    window.location.reload()
   }
   return (
     <SheetContent>
