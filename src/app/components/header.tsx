@@ -13,7 +13,7 @@ const Header = () => {
         <Link href="/">
           <Image
             alt="FSW Barber"
-            src="/logo.png"
+            src="/Logo.png"
             height={140}
             width={140}
             className="-my-2 object-contain"
