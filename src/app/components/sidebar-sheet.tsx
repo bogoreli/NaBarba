@@ -20,8 +20,10 @@ const SidebarSheet = () => {
   const { data: session } = authClient.useSession()
 
   const handleLogoutClick = () => {
-    authClient.signOut()
-    window.location.href = "/"
+    const handleLogout = async () => {
+      await fetch("/api/auth", { method: "DELETE" })
+      window.location.href = "/" 
+    }
   }
   return (
     <SheetContent>
