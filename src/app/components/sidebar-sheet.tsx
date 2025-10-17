@@ -19,11 +19,9 @@ import { authClient } from "@/lib/auth-client"
 const SidebarSheet = () => {
   const { data: session } = authClient.useSession()
 
-  const handleLogoutClick = () => {
-    const handleLogout = async () => {
-      await fetch("/api/auth", { method: "DELETE" })
-      window.location.href = "/" 
-    }
+  const handleLogoutClick = async () => {
+    await fetch("/api/auth", { method: "DELETE" })
+    window.location.href = "/"
   }
   return (
     <SheetContent>
