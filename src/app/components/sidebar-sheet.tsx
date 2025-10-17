@@ -20,7 +20,7 @@ const SidebarSheet = () => {
   const { data: session } = authClient.useSession()
 
   const handleLogoutClick = async () => {
-    authClient.signOut()
+    await authClient.signOut()
     window.location.href = "/"
   }
   return (
