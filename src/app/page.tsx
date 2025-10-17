@@ -88,6 +88,7 @@ const Home = async () => {
             src="/bannerBarbearia.png"
             fill
             className="rounded-xl object-cover"
+            unoptimized
           />
         </div>
 
